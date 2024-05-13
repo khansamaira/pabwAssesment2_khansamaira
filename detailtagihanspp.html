@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabel Data Tagihan SPP</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Sertakan jQuery library -->
+</head>
+<body>
+
+<table id="tabel_data">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID Siswa</th>
+            <th>Bulan</th>
+            <th>Tahun</th>
+            <th>Jumlah</th>
+            <th>Tanggal Pembayaran</th>
+        </tr>
+    </thead>
+    <tbody id="tbody_data">
+        <!-- Data akan diisi melalui JavaScript -->
+    </tbody>
+</table>
+
+<script>
+$(document).ready(function(){
+    $.ajax({
+        url: "detailtagihanspp.php",
+        type: "GET",
+        dataType: "json",
+        success: function(data){
+            // Mendapatkan referensi tbody dari tabel
+            var tbody = $('#tbody_data');
+            
+            // Melooping data dan menambahkan baris-baris ke dalam tbody
+            $.each(data, function(index, item){
+                var row = '<tr>' +
+                            '<td>' + item.id + '</td>' +
+                            '<td>' + item.id_siswa + '</td>' +
+                            '<td>' + item.bulan + '</td>' +
+                            '<td>' + item.tahun + '</td>' +
+                            '<td>' + item.jumlah + '</td>' +
+                            '<td>' + item.tanggal_pembayaran + '</td>' +
+                          '</tr>';
+                tbody.append(row);
+            });
+        }
+    });
+});
+</script>
+
+<script> //no 4
+    $(document).on('click', '.hapus_data', function(){
+        var id = $(this).data('id');
+        $.ajax({
+            url: "hapus_data.php?id="+id,
+            type: "GET",
+            success: function(response){
+                // Lakukan sesuatu setelah data dihapus, misalnya refresh tabel
+                console.log("Data dengan ID "+id+" telah dihapus.");
+            }
+        });
+    });
+    </script>
+    
+
+</body>
+</html>
