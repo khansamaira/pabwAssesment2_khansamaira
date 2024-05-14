@@ -11,7 +11,7 @@ if ($conn->connect_error) {
 $id = $_GET['id'];
 
 //query untuk menghapus data
-$sql = "DELETE FROM nama_tabel WHERE id=".$id;
+$sql = "DELETE FROM detail_tagihan_spp WHERE id=".$id;
 
 if ($conn->query($sql) === TRUE) {
     echo "Data berhasil dihapus";
