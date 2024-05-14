@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabel Data Tagihan SPP</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Sertakan jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
@@ -17,6 +17,7 @@
             <th>Tahun</th>
             <th>Jumlah</th>
             <th>Tanggal Pembayaran</th>
+            <th>Aksi</th>
         </tr>
     </thead>
     <tbody id="tbody_data">
@@ -31,10 +32,8 @@ $(document).ready(function(){
         type: "GET",
         dataType: "json",
         success: function(data){
-            // Mendapatkan referensi tbody dari tabel
             var tbody = $('#tbody_data');
-            
-            // Melooping data dan menambahkan baris-baris ke dalam tbody
+            tbody.empty();
             $.each(data, function(index, item){
                 var row = '<tr>' +
                             '<td>' + item.id + '</td>' +
@@ -43,28 +42,31 @@ $(document).ready(function(){
                             '<td>' + item.tahun + '</td>' +
                             '<td>' + item.jumlah + '</td>' +
                             '<td>' + item.tanggal_pembayaran + '</td>' +
+                            '<td><button class="hapus_data" data-id="' + item.id + '">Hapus</button></td>' +
                           '</tr>';
                 tbody.append(row);
             });
         }
     });
-});
-</script>
 
-<script> //no 4
     $(document).on('click', '.hapus_data', function(){
         var id = $(this).data('id');
         $.ajax({
-            url: "hapus_data.php?id="+id,
+            url: "hapus_data.php?id=" + id,
             type: "GET",
+            dataType: "json",
             success: function(response){
-                // Lakukan sesuatu setelah data dihapus, misalnya refresh tabel
-                console.log("Data dengan ID "+id+" telah dihapus.");
+                if (response.message) {
+                    console.log(response.message);
+                    location.reload();
+                } else if (response.error) {
+                    console.log(response.error);
+                }
             }
         });
     });
-    </script>
-    
+});
+</script>
 
 </body>
 </html>
