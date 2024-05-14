@@ -1,26 +1,20 @@
 <?php
-//koneksi ke database
-$conn = new mysqli("localhost", "root", " ", "telkompay");
+header('Content-Type: application/json');
 
-//cek koneksi
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
+$host = 'localhost';
+$user = 'root';
+$password = '';
+$dbname = 'telkompay';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $stmt = $pdo->query("SELECT * FROM detail_tagihan_spp");
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    echo json_encode($data);
+} catch (PDOException $e) {
+    echo json_encode(['error' => 'Connection failed: ' . $e->getMessage()]);
 }
-
-//query untuk mengambil data
-$sql = "SELECT * FROM detail_tagihan_spp";
-$result = $conn->query($sql);
-
-//konversi data menjadi JSON
-$data = array();
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-    }
-}
-echo json_encode($data);
-
-//tutup koneksi
-$conn->close();
 ?>
-
