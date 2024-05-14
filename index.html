@@ -32,7 +32,7 @@
 <table id="tabel_data">
     <thead>
         <tr>
-            <th>ID</th>
+            <th>ID Tagihan</th>
             <th>ID Siswa</th>
             <th>Bulan</th>
             <th>Tahun</th>
@@ -57,7 +57,7 @@ $(document).ready(function(){
             tbody.empty();
             $.each(data, function(index, item){
                 var row = '<tr>' +
-                            '<td>' + item.id + '</td>' +
+                            '<td>' + item.id_tagihan + '</td>' +
                             '<td>' + item.id_siswa + '</td>' +
                             '<td>' + item.bulan + '</td>' +
                             '<td>' + item.tahun + '</td>' +
