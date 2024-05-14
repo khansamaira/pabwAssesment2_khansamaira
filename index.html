@@ -37,6 +37,8 @@
             <th>Bulan</th>
             <th>Tahun</th>
             <th>Jumlah Tagihan</th>
+            <th>Tanggal Jatuh Tempo</th>
+            <th>Status Pembayaran</th>
             <th>Tanggal Pembayaran</th>
             <th>Aksi</th>
         </tr>
@@ -62,6 +64,8 @@ $(document).ready(function(){
                             '<td>' + item.bulan + '</td>' +
                             '<td>' + item.tahun + '</td>' +
                             '<td>' + item.jumlah_tagihan + '</td>' +
+                            '<td>' + item.tanggal_jatuh_tempo + '</td>' +
+                            '<td>' + item.status_pembayaran + '</td>' +
                             '<td>' + item.tanggal_pembayaran + '</td>' +
                             '<td><button class="hapus_data" data-id="' + item.id + '">Hapus</button></td>' +
                           '</tr>';
