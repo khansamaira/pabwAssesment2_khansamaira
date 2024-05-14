@@ -48,32 +48,58 @@
     </tbody>
 </table>
 
+<!-- Form untuk mengedit data -->
+<div id="edit_form" style="display:none;">
+    <h2>Edit Data Tagihan</h2>
+    <form id="form_edit_data">
+        <input type="hidden" id="edit_id_tagihan">
+        ID Siswa: <input type="text" id="edit_id_siswa"><br>
+        Bulan: <input type="text" id="edit_bulan"><br>
+        Tahun: <input type="text" id="edit_tahun"><br>
+        Jumlah Tagihan: <input type="text" id="edit_jumlah_tagihan"><br>
+        Tanggal Jatuh Tempo: <input type="date" id="edit_tanggal_jatuh_tempo"><br>
+        Status Pembayaran: <input type="text" id="edit_status_pembayaran"><br>
+        Tanggal Pembayaran: <input type="date" id="edit_tanggal_pembayaran"><br>
+        <button type="button" id="simpan_edit">Simpan</button>
+        <button type="button" id="batal_edit">Batal</button>
+    </form>
+</div>
+
 <script>
 $(document).ready(function(){
-    $.ajax({
-        url: "detailtagihanspp.php",
-        type: "GET",
-        dataType: "json",
-        success: function(data){
-            var tbody = $('#tbody_data');
-            tbody.empty();
-            $.each(data, function(index, item){
-                var row = '<tr>' +
-                            '<td>' + item.id_tagihan + '</td>' +
-                            '<td>' + item.id_siswa + '</td>' +
-                            '<td>' + item.bulan + '</td>' +
-                            '<td>' + item.tahun + '</td>' +
-                            '<td>' + item.jumlah_tagihan + '</td>' +
-                            '<td>' + item.tanggal_jatuh_tempo + '</td>' +
-                            '<td>' + item.status_pembayaran + '</td>' +
-                            '<td>' + item.tanggal_pembayaran + '</td>' +
-                            '<td><button class="hapus_data" data-id="' + item.id + '">Hapus</button></td>' +
-                          '</tr>';
-                tbody.append(row);
-            });
-        }
-    });
+    // Fungsi untuk memuat data dari server dan menampilkan di tabel
+    function loadTableData() {
+        $.ajax({
+            url: "detailtagihanspp.php",
+            type: "GET",
+            dataType: "json",
+            success: function(data){
+                var tbody = $('#tbody_data');
+                tbody.empty();
+                $.each(data, function(index, item){
+                    var row = '<tr>' +
+                                '<td>' + item.id_tagihan + '</td>' +
+                                '<td>' + item.id_siswa + '</td>' +
+                                '<td>' + item.bulan + '</td>' +
+                                '<td>' + item.tahun + '</td>' +
+                                '<td>' + item.jumlah_tagihan + '</td>' +
+                                '<td>' + item.tanggal_jatuh_tempo + '</td>' +
+                                '<td>' + item.status_pembayaran + '</td>' +
+                                '<td>' + item.tanggal_pembayaran + '</td>' +
+                                '<td>' +
+                                    '<button class="edit_data" data-id="' + item.id_tagihan + '">Edit</button>' +
+                                    '<button class="hapus_data" data-id="' + item.id_tagihan + '">Hapus</button>' +
+                                '</td>' +
+                              '</tr>';
+                    tbody.append(row);
+                });
+            }
+        });
+    }
 
+    loadTableData();
+
+    // Fungsi untuk menghapus data
     $(document).on('click', '.hapus_data', function(){
         var id = $(this).data('id');
         $.ajax({
@@ -83,12 +109,75 @@ $(document).ready(function(){
             success: function(response){
                 if (response.message) {
                     console.log(response.message);
-                    location.reload();
+                    loadTableData();
                 } else if (response.error) {
                     console.log(response.error);
                 }
             }
         });
+    });
+
+    // Fungsi untuk menampilkan form edit dengan data yang dipilih
+    $(document).on('click', '.edit_data', function(){
+        var id = $(this).data('id');
+        $.ajax({
+            url: "get_data.php?id=" + id,
+            type: "GET",
+            dataType: "json",
+            success: function(data){
+                $('#edit_id_tagihan').val(data.id_tagihan);
+                $('#edit_id_siswa').val(data.id_siswa);
+                $('#edit_bulan').val(data.bulan);
+                $('#edit_tahun').val(data.tahun);
+                $('#edit_jumlah_tagihan').val(data.jumlah_tagihan);
+                $('#edit_tanggal_jatuh_tempo').val(data.tanggal_jatuh_tempo);
+                $('#edit_status_pembayaran').val(data.status_pembayaran);
+                $('#edit_tanggal_pembayaran').val(data.tanggal_pembayaran);
+                $('#edit_form').show();
+            }
+        });
+    });
+
+    // Fungsi untuk menyimpan perubahan data
+    $('#simpan_edit').click(function(){
+        var id_tagihan = $('#edit_id_tagihan').val();
+        var id_siswa = $('#edit_id_siswa').val();
+        var bulan = $('#edit_bulan').val();
+        var tahun = $('#edit_tahun').val();
+        var jumlah_tagihan = $('#edit_jumlah_tagihan').val();
+        var tanggal_jatuh_tempo = $('#edit_tanggal_jatuh_tempo').val();
+        var status_pembayaran = $('#edit_status_pembayaran').val();
+        var tanggal_pembayaran = $('#edit_tanggal_pembayaran').val();
+
+        $.ajax({
+            url: "edit_data.php",
+            type: "POST",
+            data: {
+                id_tagihan: id_tagihan,
+                id_siswa: id_siswa,
+                bulan: bulan,
+                tahun: tahun,
+                jumlah_tagihan: jumlah_tagihan,
+                tanggal_jatuh_tempo: tanggal_jatuh_tempo,
+                status_pembayaran: status_pembayaran,
+                tanggal_pembayaran: tanggal_pembayaran
+            },
+            dataType: "json",
+            success: function(response){
+                if (response.message) {
+                    console.log(response.message);
+                    $('#edit_form').hide();
+                    loadTableData();
+                } else if (response.error) {
+                    console.log(response.error);
+                }
+            }
+        });
+    });
+
+    // Fungsi untuk membatalkan pengeditan
+    $('#batal_edit').click(function(){
+        $('#edit_form').hide();
     });
 });
 </script>
